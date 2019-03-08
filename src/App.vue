@@ -1,12 +1,20 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <StaticNavBar></StaticNavBar>
+
     <router-view />
   </div>
 </template>
+
+<script>
+import StaticNavBar from "@/components/StaticNavBar.vue";
+
+export default {
+  components: {
+    StaticNavBar
+  }
+};
+</script>
 
 <style>
 #app {

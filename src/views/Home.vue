@@ -1,18 +1,34 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <UserList :users="users"></UserList>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import UserList from "@/components/UserList.vue";
+import axios from "axios";
 
 export default {
-  name: "home",
+  name: "Home",
   components: {
-    HelloWorld
+    UserList
+  },
+  data: function() {
+    return {
+      users: []
+    };
+  },
+  mounted: function() {
+    this.loadUsers();
+  },
+  methods: {
+    loadUsers: function() {
+      var self = this;
+      axios.get("http://localhost:3004/users").then(function(response) {
+        self.users = response.data;
+      });
+    }
   }
 };
 </script>
