@@ -27,11 +27,13 @@ export default {
       this.user = {};
     },
     saveUser: function(editedUser) {
-      axios
-        .post("http://localhost:3004/users", editedUser)
-        .then(function(response) {
-          console.log(response);
+      var self = this;
+      axios.post("http://localhost:3004/users", editedUser).then(function() {
+        self.$toasted.success("Success", {
+          position: "top-center",
+          duration: 1000
         });
+      });
     }
   }
 };

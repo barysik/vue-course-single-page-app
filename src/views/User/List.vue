@@ -38,6 +38,10 @@ export default {
     removeUser: function(id) {
       var self = this;
       axios.delete("http://localhost:3004/users/" + id).then(function() {
+        self.$toasted.success("Success", {
+          position: "top-center",
+          duration: 1000
+        });
         self.loadUsers();
       });
     }

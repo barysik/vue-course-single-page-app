@@ -35,10 +35,14 @@ export default {
         });
     },
     saveUser: function(editedUser) {
+      var self = this;
       axios
         .put("http://localhost:3004/users/" + this.$route.params.id, editedUser)
-        .then(function(response) {
-          console.log(response);
+        .then(function() {
+          self.$toasted.success("Success", {
+            position: "top-center",
+            duration: 1000
+          });
         });
     }
   }
