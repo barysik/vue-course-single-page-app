@@ -21,13 +21,21 @@
           <td>{{ user.lastName | toUpperCase }}</td>
           <td>{{ user.email }}</td>
           <td>
-            <button
-              type="button"
-              class="btn btn-primary btn-margin"
-              @click="editUser(user.id)"
-            >
-              <i class="fa fa-edit"></i>
-            </button>
+            <div class="btn-group">
+              <router-link
+                :to="'/users/edit/' + user.id"
+                class="btn btn-primary"
+                tag="button"
+                ><i class="fa fa-edit"></i
+              ></router-link>
+              <button
+                type="button"
+                class="btn btn-dark"
+                @click="removeUser(user.id)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -59,15 +67,9 @@ export default {
     }
   },
   methods: {
-    editUser: function() {
-      //this.$emit('edit-user', id);
+    removeUser: function(id) {
+      this.$emit("remove-user", id);
     }
   }
 };
 </script>
-
-<style>
-.btn-margin {
-  margin-right: 5px;
-}
-</style>
