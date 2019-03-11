@@ -1,9 +1,9 @@
 import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
+import App from "@App.vue";
+import router from "@router.js";
 import Toasted from "vue-toasted";
 import NProgress from "vue-nprogress";
-import "bootstrap/dist/css/bootstrap.css";
+import "@bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 const nprogress = new NProgress({ parent: ".nprogress-container" });
