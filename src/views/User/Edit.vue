@@ -1,12 +1,23 @@
 <template>
   <div class="user-edit-page-wrapper col-6">
     <h1>Edit user</h1>
-    <UserEditForm v-if="user" :user="user" @save-user="saveUser"></UserEditForm>
+    <div v-if="!user" class="alert alert-warning" role="alert">
+      Loading...
+    </div>
+    <UserEditForm v-else v-model="user"></UserEditForm>
+
+    <button type="button" class="btn btn-warning float-left" @click="goBack">
+      Back
+    </button>
+    <button type="button" class="btn btn-primary float-right" @click="saveUser">
+      Submit
+    </button>
   </div>
 </template>
 
 <script>
 import UserEditForm from "@/components/UserEditForm.vue";
+import AppSettings from "@/settings.js";
 import axios from "axios";
 
 export default {
@@ -19,31 +30,38 @@ export default {
       user: null
     };
   },
+  computed: {
+    userId: function() {
+      return this.$route.params.id;
+    },
+    apiRoute: function() {
+      return "users/";
+    }
+  },
   mounted: function() {
     this.loadUser();
   },
   methods: {
     loadUser: function() {
-      var self = this;
       axios
-        .get("http://localhost:3004/users/" + this.$route.params.id)
-        .then(function(response) {
-          return response.data;
-        })
-        .then(function(user) {
-          self.user = user;
+        .get(AppSettings.api.path + this.apiRoute + this.userId)
+        .then(response => response.data)
+        .then(user => {
+          this.user = user;
         });
     },
-    saveUser: function(editedUser) {
-      var self = this;
+    saveUser: function() {
       axios
-        .put("http://localhost:3004/users/" + this.$route.params.id, editedUser)
-        .then(function() {
-          self.$toasted.success("Success", {
+        .put(AppSettings.api.path + this.apiRoute + this.userId, this.user)
+        .then(() => {
+          this.$toasted.success("Success", {
             position: "top-center",
             duration: 1000
           });
         });
+    },
+    goBack: function() {
+      this.$router.go(-1);
     }
   }
 };

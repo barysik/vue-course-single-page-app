@@ -879,6 +879,21 @@
       "address": "121 Moffat Street, Springville, New Mexico, 1458",
       "about": "Do ex tempor pariatur ut qui. Ipsum in ea Lorem ea ex elit labore voluptate tempor qui officia id ut consequat. Dolore quis veniam cillum reprehenderit non aliqua consequat consequat dolore ad nisi sint. Quis id proident duis sint do laborum adipisicing do non aliquip laborum ipsum nisi. Quis culpa nostrud consectetur laboris pariatur culpa do eu consectetur irure amet in. Consectetur sint enim adipisicing cupidatat qui nisi voluptate cillum.",
       "registered": "29.06.2015"
+    },
+    {
+      "firstName": "first",
+      "lastName": "last",
+      "age": "30",
+      "email": "a@a.b",
+      "phone": "123123",
+      "address": "test",
+      "company": "test",
+      "picture": "http://placehold.it/128x128",
+      "isActive": true,
+      "accessLevel": "user",
+      "balance": "12345",
+      "about": "about user",
+      "id": 55
     }
   ]
 }

@@ -1,12 +1,20 @@
 <template>
   <div class="user-add-page-wrapper col-6">
     <h1>Add user</h1>
-    <UserEditForm v-if="user" :user="user" @save-user="saveUser"></UserEditForm>
+    <UserEditForm v-model="user"></UserEditForm>
+
+    <button type="button" class="btn btn-warning float-left" @click="goBack">
+      Back
+    </button>
+    <button type="button" class="btn btn-primary float-right" @click="saveUser">
+      Submit
+    </button>
   </div>
 </template>
 
 <script>
 import UserEditForm from "@/components/UserEditForm.vue";
+import AppSettings from "@/settings.js";
 import axios from "axios";
 
 export default {
@@ -16,24 +24,25 @@ export default {
   },
   data: function() {
     return {
-      user: null
+      user: {}
     };
   },
-  mounted: function() {
-    this.loadUser();
+  computed: {
+    apiRoute: function() {
+      return "users/";
+    }
   },
   methods: {
-    loadUser: function() {
-      this.user = {};
-    },
-    saveUser: function(editedUser) {
-      var self = this;
-      axios.post("http://localhost:3004/users", editedUser).then(function() {
-        self.$toasted.success("Success", {
+    saveUser: function() {
+      axios.post(AppSettings.api.path + this.apiRoute, this.user).then(() => {
+        this.$toasted.success("Success", {
           position: "top-center",
           duration: 1000
         });
       });
+    },
+    goBack: function() {
+      this.$router.go(-1);
     }
   }
 };
