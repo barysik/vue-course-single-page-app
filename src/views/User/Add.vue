@@ -29,12 +29,12 @@ export default {
   },
   computed: {
     apiRoute: function() {
-      return "users/";
+      return AppSettings.api.path + "users/";
     }
   },
   methods: {
     saveUser: function() {
-      axios.post(AppSettings.api.path + this.apiRoute, this.user).then(() => {
+      axios.post(this.apiRoute, this.user).then(() => {
         this.$toasted.success("Success", {
           position: "top-center",
           duration: 1000

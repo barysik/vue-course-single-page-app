@@ -35,7 +35,10 @@ export default {
       return this.$route.params.id;
     },
     apiRoute: function() {
-      return "users/";
+      return AppSettings.api.path + "users/";
+    },
+    apiUserRoute: function() {
+      return this.apiRoute + this.userId;
     }
   },
   mounted: function() {
@@ -44,21 +47,19 @@ export default {
   methods: {
     loadUser: function() {
       axios
-        .get(AppSettings.api.path + this.apiRoute + this.userId)
+        .get(this.apiUserRoute)
         .then(response => response.data)
         .then(user => {
           this.user = user;
         });
     },
     saveUser: function() {
-      axios
-        .put(AppSettings.api.path + this.apiRoute + this.userId, this.user)
-        .then(() => {
-          this.$toasted.success("Success", {
-            position: "top-center",
-            duration: 1000
-          });
+      axios.put(this.apiUserRoute, this.user).then(() => {
+        this.$toasted.success("Success", {
+          position: "top-center",
+          duration: 1000
         });
+      });
     },
     goBack: function() {
       this.$router.go(-1);

@@ -4,20 +4,18 @@
     <div v-if="isLoading" class="alert alert-warning" role="alert">
       Loading...
     </div>
-    <UserList v-else :users="users" @remove-user="removeUser"></UserList>
+    <List v-else :users="users" @remove-user="removeUser"></List>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import UserList from "@/components/UserList.vue";
 import AppSettings from "@/settings.js";
 import axios from "axios";
 
 export default {
-  name: "UserPage",
+  name: "UsersListPage",
   components: {
-    UserList
+    List: () => import("@/components/List/List.vue")
   },
   data: function() {
     return {
@@ -27,7 +25,7 @@ export default {
   },
   computed: {
     apiRoute: function() {
-      return "users/";
+      return AppSettings.api.path + "users/";
     }
   },
   mounted: function() {
@@ -36,7 +34,7 @@ export default {
   methods: {
     loadUsers: function() {
       axios
-        .get(AppSettings.api.path + this.apiRoute)
+        .get(this.apiRoute)
         .then(response => response.data)
         .then(users => {
           this.isLoading = false;
@@ -44,7 +42,7 @@ export default {
         });
     },
     removeUser: function(id) {
-      axios.delete(AppSettings.api.path + this.apiRoute + id).then(() => {
+      axios.delete(this.apiRoute + id).then(() => {
         this.$toasted.success("Success", {
           position: "top-center",
           duration: 1000

@@ -51,22 +51,9 @@
         </tr>
       </tbody>
     </table>
-    <div class="pagination-warpper">
-      <div class="pagination-filter d-inline col-3">
-        <label for="elementsOnPage">Show in list: </label>
-        <select
-          id="elementsOnPage"
-          v-model="filter.pagination.elementsOnPage"
-          name="elementsOnPage"
-        >
-          <option
-            v-for="countPoint in elementsOnPageList"
-            :key="countPoint"
-            :value="countPoint"
-            >{{ countPoint }}</option
-          >
-        </select>
-      </div>
+    <div class="pagination-warpper row">
+      <Test></Test>
+      <!-- <paginationListItems v-model="filter"></paginationListItems> -->
       <nav aria-label="pagination" class="float-right d-inline">
         <ul class="pagination">
           <li class="page-item">
@@ -82,7 +69,15 @@
 </template>
 
 <script>
+// import paginationListItems from "@/components/List/PaginationListItems.vue";
+import Test from "../Test.vue";
+
 export default {
+  name: "List",
+  componets: {
+    //paginationListItems
+    Test
+  },
   props: {
     users: {
       type: Array,
@@ -103,9 +98,6 @@ export default {
   computed: {
     countOfUsers: function() {
       return this.users.length;
-    },
-    elementsOnPageList: function() {
-      return [5, 10, 15];
     }
   },
   watch: {
