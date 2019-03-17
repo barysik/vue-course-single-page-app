@@ -5,6 +5,7 @@ Vue.use(Router);
 
 export default new Router({
   linkExactActiveClass: "active",
+  mode: "history",
   routes: [
     {
       path: "/",
@@ -21,6 +22,10 @@ export default new Router({
     {
       path: "/users/add",
       component: () => import("@/views/User/Add.vue")
+    },
+    {
+      path: "/users/phonebook",
+      component: () => import("@/views/User/Phonebook.vue")
     }
   ]
 });

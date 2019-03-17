@@ -5,6 +5,11 @@
       <div id="navbarCollapse" class="collapse navbar-collapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
+            <router-link to="/users/phonebook" class="nav-link" exact
+              >Phonebook</router-link
+            >
+          </li>
+          <li class="nav-item">
             <router-link to="/users" class="nav-link" exact>Users</router-link>
           </li>
           <li class="nav-item">

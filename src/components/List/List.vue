@@ -1,142 +1,120 @@
 <template>
-  <div class="user-list-wrapper form-body">
-    <h4>
-      <span>Count of Users: {{ countOfUsers }}</span>
-      <span> | Current Page: {{ filter.pagination.currentPage }}</span>
-    </h4>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Avatar</th>
-          <th scope="col">First Name</th>
-          <th scope="col">Last Name</th>
-          <th scope="col">E-mail</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(user, index) in filteredUsers" :key="user.id">
-          <th scope="row">
-            {{
-              (filter.pagination.currentPage - 1) *
-                filter.pagination.elementsOnPage +
-                index +
-                1
-            }}
-          </th>
-          <td>
-            <img :src="user.picture" height="50" />
-          </td>
-          <td class="to-upper-case">{{ user.firstName }}</td>
-          <td class="to-upper-case">{{ user.lastName }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            <div class="btn-group">
-              <router-link
-                :to="'/users/edit/' + user.id"
-                class="btn btn-primary"
-                tag="button"
-                ><i class="fa fa-edit"></i
-              ></router-link>
-              <button
-                type="button"
-                class="btn btn-dark"
-                @click="removeUser(user.id)"
-              >
-                <i class="fa fa-trash"></i>
-              </button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="pagination-warpper row">
-      <Test></Test>
-      <!-- <paginationListItems v-model="filter"></paginationListItems> -->
-      <nav aria-label="pagination" class="float-right d-inline">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" @click="toPrevPage">Previous</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" @click="toNextPage">Next</a>
-          </li>
-        </ul>
-      </nav>
+  <div class="user-list-wrapper">
+    <div v-if="isLoading" class="alert alert-warning" role="alert">
+      Loading...
+    </div>
+    <div v-else class="form-body">
+      <div class="row float-right">
+        <h4>
+          <span>Count of Items: {{ countOfItems }}</span>
+          <span> | Current Page: {{ currentPage }}</span>
+        </h4>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <slot name="table-header"></slot>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in filteredItems" :key="item.id">
+            <slot
+              name="table-row"
+              :item="item"
+              :globalIndex="indexOfItem(index)"
+              :editListItem="editListItem"
+              :removeListItem="removeListItem"
+            >
+            </slot>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pagination-warpper row">
+        <div class="pagination-filter d-inline col-2">
+          <label>Show in list: </label>
+          <div class="col-6" style="display: inline-block;">
+            <itemsPerPageSelector
+              v-model.number="itemsPerPage"
+            ></itemsPerPageSelector>
+          </div>
+        </div>
+        <div class="col-10">
+          <div class="float-right">
+            <paginator
+              v-model.number="currentPage"
+              :total-count="countOfItems"
+              :items-per-page="itemsPerPage"
+            ></paginator>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-// import paginationListItems from "@/components/List/PaginationListItems.vue";
-import Test from "../Test.vue";
+import itemsPerPageSelector from "@/components/List/ItemsPerPageSelector.vue";
+import paginator from "@/components/List/Paginator.vue";
+import axios from "axios";
+import _ from "lodash";
 
 export default {
   name: "List",
-  componets: {
-    //paginationListItems
-    Test
+  components: {
+    itemsPerPageSelector,
+    paginator
   },
   props: {
-    users: {
-      type: Array,
+    url: {
+      type: String,
       required: true
     }
   },
   data: function() {
     return {
-      filter: {
-        pagination: {
-          currentPage: 1,
-          elementsOnPage: 5
-        }
-      },
-      filteredUsers: []
+      list: [],
+      itemsPerPage: 5,
+      currentPage: 1,
+      isLoading: false
     };
   },
   computed: {
-    countOfUsers: function() {
-      return this.users.length;
+    countOfItems() {
+      return this.list.length;
+    },
+    filteredItems() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const finalIndex = startIndex + this.itemsPerPage;
+      return this.list.slice(startIndex, finalIndex);
     }
   },
   watch: {
-    filter: {
-      deep: true,
-      handler: "filterUsers"
+    itemsPerPage() {
+      this.currentPage = 1;
     }
   },
   mounted: function() {
-    this.filterUsers();
+    this.loadItems();
   },
   methods: {
-    removeUser: function(id) {
-      this.$emit("remove-user", id);
+    loadItems: function() {
+      this.isLoading = true;
+      axios
+        .get(this.url)
+        .then(response => response.data)
+        .then(items => {
+          this.isLoading = false;
+          this.list = items;
+        });
     },
-    filterUsers: function() {
-      this.filteredUsers = this.users.slice(
-        (this.filter.pagination.currentPage - 1) *
-          this.filter.pagination.elementsOnPage,
-        this.filter.pagination.currentPage *
-          this.filter.pagination.elementsOnPage
-      );
+    indexOfItem(index) {
+      return (this.currentPage - 1) * this.itemsPerPage + index + 1;
     },
-    toPrevPage: function() {
-      if (this.filter.pagination.currentPage - 1) {
-        this.filter.pagination.currentPage =
-          this.filter.pagination.currentPage - 1;
-      }
+    editListItem(id) {
+      this.$emit("edit-list-item", id);
     },
-    toNextPage: function() {
-      if (
-        this.filter.pagination.currentPage *
-          this.filter.pagination.elementsOnPage +
-          1 <=
-        this.countOfUsers
-      ) {
-        this.filter.pagination.currentPage =
-          this.filter.pagination.currentPage + 1;
-      }
+    removeListItem(id) {
+      this.$emit("remove-list-item", id);
+      console.log(_.findIndex(this.list, ["id", id]));
+      this.list.splice(_.findIndex(this.list, ["id", id]), 1);
     }
   }
 };
